@@ -7,17 +7,20 @@ import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/authService';
 import { jwtDecode } from 'jwt-decode';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
+
 
 function Login() {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -26,10 +29,8 @@ function Login() {
     try {
       const response = await loginUser(credentials);
       const token = response.token;
-      localStorage.setItem('token', token);
-
-      const decoded = jwtDecode(token);
-      const role = decoded.role;
+      login(token);
+      const role = jwtDecode(token).role;
 
       setSuccessMessage('Login successful!');
       setTimeout(() => {
@@ -117,19 +118,31 @@ function Login() {
               InputLabelProps={{ sx: labelStyles }}
             />
 
-            <Typography
-              variant="body2"
-              sx={{
-                color: '#00B0FF',
-                textAlign: 'right',
-                cursor: 'pointer',
-                mb: 1,
-                '&:hover': { textDecoration: 'underline' },
-              }}
-              onClick={() => navigate('/forgot-password')}
-            >
-              Forgot password?
-            </Typography>
+            <Stack direction="row" justifyContent="space-between" mb={1}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: '#00B0FF',
+                  cursor: 'pointer',
+                  '&:hover': { textDecoration: 'underline' },
+                }}
+                onClick={() => navigate('/register')}
+              >
+                Register Here
+              </Typography>
+
+              <Typography
+                variant="body2"
+                sx={{
+                  color: '#00B0FF',
+                  cursor: 'pointer',
+                  '&:hover': { textDecoration: 'underline' },
+                }}
+                onClick={() => navigate('/forgot-password')}
+              >
+                Forgot password?
+              </Typography>
+            </Stack>
 
             <Button
               type="submit"

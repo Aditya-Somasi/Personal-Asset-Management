@@ -10,6 +10,7 @@ import com.assetmanager.backend.exception.CustomException;
 import com.assetmanager.backend.model.AssetCategory;
 import com.assetmanager.backend.repository.AssetCategoryRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -33,4 +34,12 @@ public class AssetCategoryService {
             throw new CustomException("Category not found" + id);
         repository.deleteById(id);
     }
+
+    public AssetCategory updateCategory(Long id, AssetCategory updatedCategory) {
+        AssetCategory existing = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+        existing.setName(updatedCategory.getName());
+        return repository.save(existing);
+    }
+
 }

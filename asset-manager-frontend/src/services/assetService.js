@@ -62,5 +62,58 @@ export const updateAsset = async (id, updatedAsset, token) => {
   return response.data;
 };
 
+// ----------- CATEGORY ADMIN APIs ------------
+
+export const createCategory = async (name, token) => {
+  const response = await axios.post(
+    'http://localhost:8080/api/admin/categories',
+    { name },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};
+
+export const updateCategory = async (id, name, token) => {
+  const response = await axios.put(
+    `http://localhost:8080/api/admin/categories/${id}`,
+    { name },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};
+
+export const deleteCategory = async (id, token) => {
+  await axios.delete(`http://localhost:8080/api/admin/categories/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
+// ----------- STATUS ADMIN APIs ------------
+
+export const createStatus = async (name, token) => {
+  const response = await axios.post(
+    'http://localhost:8080/api/admin/statuses',
+    { name },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};
+
+export const updateStatus = async (id, name, token) => {
+  const response = await axios.put(
+    `http://localhost:8080/api/admin/statuses/${id}`,
+    { name },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};
+
+export const deleteStatus = async (id, token) => {
+  await axios.delete(`http://localhost:8080/api/admin/statuses/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
+
 
 

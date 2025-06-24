@@ -10,6 +10,7 @@ import com.assetmanager.backend.exception.CustomException;
 import com.assetmanager.backend.model.AssetStatus;
 import com.assetmanager.backend.repository.AssetStatusRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -33,4 +34,12 @@ public class AssetStatusService {
             throw new CustomException("Status not found");
         repository.deleteById(id);
     }
+
+    public AssetStatus updateStatus(Long id, AssetStatus updatedStatus) {
+        AssetStatus existing = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Status not found"));
+        existing.setName(updatedStatus.getName());
+        return repository.save(existing);
+    }
+
 }
