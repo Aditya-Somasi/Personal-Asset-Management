@@ -46,7 +46,6 @@ function AssetForm({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === 'status' && value !== 'ASSIGNED') {
       setForm(prev => ({ ...prev, [name]: value, username: '' }));
     } else {
@@ -65,6 +64,22 @@ function AssetForm({
     }
   };
 
+  const handleReset = () => {
+    setForm({
+      name: '',
+      description: '',
+      cost: '',
+      category: '',
+      status: '',
+      purchaseDate: '',
+      warrantyExpiryDate: '',
+      assetImageUrl: '',
+      username: ''
+    });
+    setError('');
+    setSuccessMessage('');
+  };
+
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate>
       <Grid container spacing={2}>
@@ -77,20 +92,34 @@ function AssetForm({
         <Grid item xs={12}>
           <TextField label="Cost (₹)" name="cost" type="number" value={form.cost} onChange={handleChange} fullWidth required />
         </Grid>
+
         <Grid item xs={12}>
-          <FormControl fullWidth required>
+          <FormControl fullWidth required sx={{ minWidth: 200 }}>
             <InputLabel>Category</InputLabel>
-            <Select name="category" value={form.category} onChange={handleChange} label="Category">
+            <Select
+              name="category"
+              value={form.category || ''}
+              onChange={handleChange}
+              label="Category"
+            >
+              <MenuItem value=""><em>None</em></MenuItem>
               {categories.map((cat) => (
                 <MenuItem key={cat.id} value={cat.name}>{cat.name}</MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
+
         <Grid item xs={12}>
-          <FormControl fullWidth required>
+          <FormControl fullWidth required sx={{ minWidth: 200 }}>
             <InputLabel>Status</InputLabel>
-            <Select name="status" value={form.status} onChange={handleChange} label="Status">
+            <Select
+              name="status"
+              value={form.status || ''}
+              onChange={handleChange}
+              label="Status"
+            >
+              <MenuItem value=""><em>None</em></MenuItem>
               {statuses.map((status) => (
                 <MenuItem key={status.id} value={status.name}>{status.name}</MenuItem>
               ))}
@@ -100,16 +129,21 @@ function AssetForm({
 
         {userRole === 'ROLE_ADMIN' && form.status === 'ASSIGNED' && (
           <Grid item xs={12}>
-            <FormControl fullWidth>
+            <FormControl fullWidth sx={{ minWidth: 200 }}>
               <InputLabel>Assign To User</InputLabel>
-              <Select name="username" value={form.username} onChange={handleChange} label="Assign To User">
+              <Select
+                name="username"
+                value={form.username || ''}
+                onChange={handleChange}
+                label="Assign To User"
+              >
+                <MenuItem value=""><em>None</em></MenuItem>
                 {users.map(user => (
                   <MenuItem key={user.username} value={user.username}>
                     {user.username}
                   </MenuItem>
                 ))}
               </Select>
-
             </FormControl>
           </Grid>
         )}
@@ -147,14 +181,77 @@ function AssetForm({
           />
         </Grid>
 
-        <Grid item xs={12}>
-          <Button variant="contained" color="primary" type="submit" fullWidth>
-            {isEdit ? 'Save Changes' : 'Submit'}
-          </Button>
-        </Grid>
+        {form.assetImageUrl && (
+          <Grid item xs={12}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                mt: 2,
+                mb: 4,
+              }}
+            >
+              <Box
+                component="img"
+                src={form.assetImageUrl}
+                alt="Asset Preview"
+                sx={{
+                  maxHeight: 200,
+                  maxWidth: '100%',
+                  objectFit: 'contain',
+                  borderRadius: 2,
+                  border: '1px solid #ccc',
+                  mb: 2,
+                }}
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
+              <Box sx={{ display: 'flex', gap: 3 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  sx={{ px: 4, borderRadius: '25px' }}
+                >
+                  {isEdit ? 'Save Changes' : 'Submit'}
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={handleReset}
+                  sx={{ px: 4, borderRadius: '25px' }}
+                >
+                  Reset
+                </Button>
+              </Box>
+            </Box>
+          </Grid>
+        )}
+
+        {!form.assetImageUrl && (
+          <Grid item xs={12}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                sx={{ px: 4, borderRadius: '25px' }}
+              >
+                {isEdit ? 'Save Changes' : 'Submit'}
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleReset}
+                sx={{ px: 4, borderRadius: '25px' }}
+              >
+                Reset
+              </Button>
+            </Box>
+          </Grid>
+        )}
       </Grid>
 
-      {/* Feedback Messages */}
       <Snackbar open={!!successMessage} autoHideDuration={3000} onClose={() => setSuccessMessage('')}>
         <Alert onClose={() => setSuccessMessage('')} severity="success">{successMessage}</Alert>
       </Snackbar>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Container, Typography, CircularProgress, Alert, Box
+  Container, Typography, CircularProgress, Alert, Box, IconButton, CssBaseline
 } from '@mui/material';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
 import { useParams, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import {
@@ -13,6 +14,7 @@ import {
 import { fetchUsers } from '../services/userService';
 import Layout from '../components/Layout';
 import AssetForm from '../components/AssetForm';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function EditAssetPage() {
   const { id } = useParams();
@@ -26,6 +28,13 @@ function EditAssetPage() {
   const [userRole, setUserRole] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [darkMode, setDarkMode] = useState(false);
+
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+    },
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,37 +78,58 @@ function EditAssetPage() {
 
   if (loading) {
     return (
-      <Layout>
-        <Box sx={{ mt: 4, ml: 4 }}>
-          <CircularProgress />
-        </Box>
-      </Layout>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Layout>
+          <Box sx={{ mt: 4, ml: 4 }}>
+            <CircularProgress />
+          </Box>
+        </Layout>
+      </ThemeProvider>
     );
   }
 
   if (error) {
     return (
-      <Layout>
-        <Alert severity="error" sx={{ mt: 3 }}>{error}</Alert>
-      </Layout>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Layout>
+          <Alert severity="error" sx={{ mt: 3 }}>{error}</Alert>
+        </Layout>
+      </ThemeProvider>
     );
   }
 
   return (
-    <Layout>
-      <Container maxWidth="sm" sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>Edit Asset</Typography>
-        <AssetForm
-          initialData={initialData}
-          onSubmit={handleUpdateAsset}
-          userRole={userRole}
-          users={users}
-          categories={categories}
-          statuses={statuses}
-          isEdit={true}
-        />
-      </Container>
-    </Layout>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Layout>
+        <Container maxWidth="sm" sx={{ mt: 4 }}>
+          {/* Toggle */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="body2" sx={{ mr: 1 }}>
+                {darkMode ? 'Light Mode' : 'Dark Mode'}
+              </Typography>
+              <IconButton onClick={() => setDarkMode(prev => !prev)} color="inherit">
+                <Brightness4Icon />
+              </IconButton>
+            </Box>
+          </Box>
+
+          <Typography variant="h5" gutterBottom>Edit Asset</Typography>
+          <AssetForm
+            initialData={initialData}
+            onSubmit={handleUpdateAsset}
+            userRole={userRole}
+            users={users}
+            categories={categories}
+            statuses={statuses}
+            isEdit={true}
+          />
+        </Container>
+      </Layout>
+    </ThemeProvider>
   );
 }
 

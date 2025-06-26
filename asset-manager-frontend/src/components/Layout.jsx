@@ -16,7 +16,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Settings as SettingsIcon } from '@mui/icons-material';
-
+import { useTheme } from '@mui/material/styles';
 
 const expandedWidth = 240;
 const collapsedWidth = 60;
@@ -28,6 +28,7 @@ const Layout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const theme = useTheme();
 
   const toggleSidebar = () => setCollapsed(!collapsed);
   const handleMenu = (e) => setAnchorEl(e.currentTarget);
@@ -49,14 +50,25 @@ const Layout = ({ children }) => {
     { text: 'Add Asset', icon: <AddIcon />, path: '/add-asset', roles: ['ROLE_ADMIN'] },
     { text: 'Users', icon: <AccountCircle />, path: '/users', roles: ['ROLE_ADMIN'] },
     { text: 'Admin Settings', icon: <SettingsIcon />, path: '/admin-settings', roles: ['ROLE_ADMIN'] }
-
   ];
 
   const drawer = (
     <div>
-      <Toolbar sx={{ justifyContent: collapsed ? 'center' : 'space-between', px: 2 }}>
+      <Toolbar
+        sx={{
+          justifyContent: collapsed ? 'center' : 'space-between',
+          px: 2,
+        }}
+      >
         {!collapsed && (
-          <Typography variant="h6" noWrap sx={{ color: 'primary.main', fontWeight: 'bold' }}>
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{
+              fontWeight: 'bold',
+              color: theme.palette.mode === 'dark' ? 'white' : 'black'
+            }}
+          >
             Options
           </Typography>
         )}
@@ -68,29 +80,45 @@ const Layout = ({ children }) => {
       <List>
         {menuItems
           .filter(item => item.roles.includes(user?.role))
-          .map((item) => (
-            <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
-              <Tooltip title={collapsed ? item.text : ''} placement="right">
-                <ListItemButton
-                  selected={location.pathname === item.path}
-                  onClick={() => navigate(item.path)}
-                  sx={{
-                    justifyContent: collapsed ? 'center' : 'initial',
-                    px: 2.5,
-                    '&.Mui-selected': {
-                      backgroundColor: 'primary.light',
-                      '&:hover': { backgroundColor: 'primary.light' }
-                    }
-                  }}
-                >
-                  <ListItemIcon sx={{ minWidth: 0, mr: collapsed ? 0 : 2, justifyContent: 'center' }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  {!collapsed && <ListItemText primary={item.text} />}
-                </ListItemButton>
-              </Tooltip>
-            </ListItem>
-          ))}
+          .map((item) => {
+            const isSelected = location.pathname === item.path;
+            const selectedBg = theme.palette.mode === 'dark' ? '#fdd835' : '#2196f3';
+            const selectedHoverBg = theme.palette.mode === 'dark' ? '#fbc02d' : '#1976d2';
+            const selectedTextColor = theme.palette.getContrastText(selectedBg);
+
+            return (
+              <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
+                <Tooltip title={collapsed ? item.text : ''} placement="right">
+                  <ListItemButton
+                    selected={isSelected}
+                    onClick={() => navigate(item.path)}
+                    sx={{
+                      justifyContent: collapsed ? 'center' : 'initial',
+                      px: 2.5,
+                      borderRadius: 1,
+                      '&.Mui-selected': {
+                        backgroundColor: selectedBg,
+                        color: selectedTextColor,
+                        '& .MuiListItemIcon-root': {
+                          color: selectedTextColor
+                        },
+                        '&:hover': {
+                          backgroundColor: selectedHoverBg
+                        }
+                      }
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{ minWidth: 0, mr: collapsed ? 0 : 2, justifyContent: 'center' }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    {!collapsed && <ListItemText primary={item.text} />}
+                  </ListItemButton>
+                </Tooltip>
+              </ListItem>
+            );
+          })}
       </List>
     </div>
   );
@@ -103,13 +131,23 @@ const Layout = ({ children }) => {
         sx={{
           width: `calc(100% - ${collapsed ? collapsedWidth : expandedWidth}px)`,
           ml: `${collapsed ? collapsedWidth : expandedWidth}px`,
-          transition: 'all 0.3s ease'
+          transition: 'all 0.3s ease',
+          bgcolor: theme.palette.mode === 'dark' ? '#fdd835' : '#1976d2'
         }}
       >
         <Toolbar>
-          <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{
+              flexGrow: 1,
+              fontWeight: 'bold',
+              color: theme.palette.mode === 'dark' ? '#000' : '#fff'
+            }}
+          >
             Personal Asset Management
           </Typography>
+
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography variant="body2" sx={{ mr: 2 }}>{user?.name}</Typography>
             <IconButton onClick={handleMenu} color="inherit">
@@ -163,7 +201,6 @@ const Layout = ({ children }) => {
         {children}
       </Box>
 
-      {/* Logout Confirmation Dialog */}
       <Dialog open={confirmLogoutOpen} onClose={() => setConfirmLogoutOpen(false)}>
         <DialogTitle>Confirm Logout</DialogTitle>
         <DialogContent>Are you sure you want to logout?</DialogContent>
