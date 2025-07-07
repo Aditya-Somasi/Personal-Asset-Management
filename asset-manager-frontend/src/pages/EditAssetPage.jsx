@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Container, Typography, CircularProgress, Alert, Box, IconButton, CssBaseline
+  Container,
+  Typography,
+  CircularProgress,
+  Alert,
+  Box,
+  CssBaseline,
+  Button,
+  useTheme,
 } from '@mui/material';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useParams, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import {
@@ -14,12 +21,13 @@ import {
 import { fetchUsers } from '../services/userService';
 import Layout from '../components/Layout';
 import AssetForm from '../components/AssetForm';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function EditAssetPage() {
+function EditAssetPage({ darkMode, toggleDarkMode }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
 
   const [initialData, setInitialData] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -28,13 +36,6 @@ function EditAssetPage() {
   const [userRole, setUserRole] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
-
-  const theme = createTheme({
-    palette: {
-      mode: darkMode ? 'dark' : 'light',
-    },
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,58 +79,63 @@ function EditAssetPage() {
 
   if (loading) {
     return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Layout>
-          <Box sx={{ mt: 4, ml: 4 }}>
-            <CircularProgress />
-          </Box>
-        </Layout>
-      </ThemeProvider>
+     <Layout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+
+        <Box sx={{ mt: 4, ml: 4 }}>
+          <CircularProgress />
+        </Box>
+      </Layout>
     );
   }
 
   if (error) {
     return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Layout>
-          <Alert severity="error" sx={{ mt: 3 }}>{error}</Alert>
-        </Layout>
-      </ThemeProvider>
+      <Layout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+
+        <Alert severity="error" sx={{ mt: 3 }}>{error}</Alert>
+      </Layout>
     );
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Layout>
-        <Container maxWidth="sm" sx={{ mt: 4 }}>
-          {/* Toggle */}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant="body2" sx={{ mr: 1 }}>
-                {darkMode ? 'Light Mode' : 'Dark Mode'}
-              </Typography>
-              <IconButton onClick={() => setDarkMode(prev => !prev)} color="inherit">
-                <Brightness4Icon />
-              </IconButton>
-            </Box>
-          </Box>
+    <Layout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+      <Container maxWidth="sm" sx={{ mt: 4 }}>
+        {/* Back Button */}
+        <Box sx={{ mb: 3 }}>
+          <Button
+            onClick={() => navigate('/dashboard')}
+            variant="contained"
+            startIcon={<ArrowBackIosNewIcon />}
+            sx={{
+              borderRadius: '999px',
+              fontWeight: 600,
+              fontSize: '1rem',
+              px: 3,
+              py: 1.2,
+              textTransform: 'none',
+              backgroundColor: isDark ? '#FFD700' : '#1976d2',
+              color: isDark ? '#000' : '#fff',
+              '&:hover': {
+                backgroundColor: isDark ? '#facc15' : '#1565c0',
+              },
+            }}
+          >
+            Back to Dashboard
+          </Button>
+        </Box>
 
-          <Typography variant="h5" gutterBottom>Edit Asset</Typography>
-          <AssetForm
-            initialData={initialData}
-            onSubmit={handleUpdateAsset}
-            userRole={userRole}
-            users={users}
-            categories={categories}
-            statuses={statuses}
-            isEdit={true}
-          />
-        </Container>
-      </Layout>
-    </ThemeProvider>
+        <Typography variant="h5" gutterBottom>Edit Asset</Typography>
+        <AssetForm
+          initialData={initialData}
+          onSubmit={handleUpdateAsset}
+          userRole={userRole}
+          users={users}
+          categories={categories}
+          statuses={statuses}
+          isEdit={true}
+        />
+      </Container>
+    </Layout>
   );
 }
 

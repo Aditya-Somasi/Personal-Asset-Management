@@ -131,9 +131,14 @@ function StatusManager({ token }) {
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: isDark ? '#FFD700' : '#1976d2' }}>
-                <TableCell sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold' }}>ID</TableCell>
-                <TableCell sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold' }}>Name</TableCell>
-                <TableCell align="right" sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold' }}>Actions</TableCell>
+                <TableCell sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold', border: '1px solid', borderColor: 'divider' }}>ID</TableCell>
+                <TableCell sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold', border: '1px solid', borderColor: 'divider' }}>Name</TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold', border: '1px solid', borderColor: 'divider' }}
+                >
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -147,9 +152,9 @@ function StatusManager({ token }) {
                     },
                   }}
                 >
-                  <TableCell>{status.id}</TableCell>
-                  <TableCell>{status.name}</TableCell>
-                  <TableCell align="right">
+                  <TableCell sx={{ border: '1px solid', borderColor: 'divider' }}>{status.id}</TableCell>
+                  <TableCell sx={{ border: '1px solid', borderColor: 'divider' }}>{status.name}</TableCell>
+                  <TableCell align="right" sx={{ border: '1px solid', borderColor: 'divider' }}>
                     <Button
                       variant="outlined"
                       onClick={() => handleOpenDialog(status)}
@@ -183,7 +188,7 @@ function StatusManager({ token }) {
               ))}
               {statuses.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={3} align="center">
+                  <TableCell colSpan={3} align="center" sx={{ border: '1px solid', borderColor: 'divider' }}>
                     No statuses found.
                   </TableCell>
                 </TableRow>

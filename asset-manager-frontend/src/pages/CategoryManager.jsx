@@ -121,9 +121,9 @@ function CategoryManager({ token }) {
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: isDark ? '#FFD700' : '#1976d2' }}>
-                <TableCell sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold' }}>ID</TableCell>
-                <TableCell sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold' }}>Name</TableCell>
-                <TableCell align="right" sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold' }}>Actions</TableCell>
+                <TableCell sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold', border: '1px solid', borderColor: 'divider' }}>ID</TableCell>
+                <TableCell sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold', border: '1px solid', borderColor: 'divider' }}>Name</TableCell>
+                <TableCell align="right" sx={{ color: isDark ? '#000' : '#fff', fontWeight: 'bold', border: '1px solid', borderColor: 'divider' }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -133,9 +133,9 @@ function CategoryManager({ token }) {
                   hover
                   sx={{ '&:hover': { backgroundColor: isDark ? '#333' : '#f1f1f1' } }}
                 >
-                  <TableCell>{cat.id}</TableCell>
-                  <TableCell>{cat.name}</TableCell>
-                  <TableCell align="right">
+                  <TableCell sx={{ border: '1px solid', borderColor: 'divider' }}>{cat.id}</TableCell>
+                  <TableCell sx={{ border: '1px solid', borderColor: 'divider' }}>{cat.name}</TableCell>
+                  <TableCell align="right" sx={{ border: '1px solid', borderColor: 'divider' }}>
                     <Button
                       variant="outlined"
                       onClick={() => handleOpenDialog(cat)}
@@ -169,7 +169,7 @@ function CategoryManager({ token }) {
               ))}
               {categories.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={3} align="center">
+                  <TableCell colSpan={3} align="center" sx={{ border: '1px solid', borderColor: 'divider' }}>
                     No categories found
                   </TableCell>
                 </TableRow>

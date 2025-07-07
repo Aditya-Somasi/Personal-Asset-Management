@@ -11,29 +11,28 @@ import {
   AccountCircle,
   Logout as LogoutIcon,
   Add as AddIcon,
-  ChevronLeft as ChevronLeftIcon
+  ChevronLeft as ChevronLeftIcon,
+  Settings as SettingsIcon,
+  DarkMode as DarkModeIcon,
+  LightMode as LightModeIcon
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Settings as SettingsIcon } from '@mui/icons-material';
-import { useTheme } from '@mui/material/styles';
 
 const expandedWidth = 240;
 const collapsedWidth = 60;
 
-const Layout = ({ children }) => {
+const Layout = ({ children, darkMode, toggleDarkMode }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [confirmLogoutOpen, setConfirmLogoutOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const theme = useTheme();
 
   const toggleSidebar = () => setCollapsed(!collapsed);
   const handleMenu = (e) => setAnchorEl(e.currentTarget);
   const handleClose = () => setAnchorEl(null);
-
   const handleLogout = () => {
     setConfirmLogoutOpen(true);
     handleClose();
@@ -54,21 +53,9 @@ const Layout = ({ children }) => {
 
   const drawer = (
     <div>
-      <Toolbar
-        sx={{
-          justifyContent: collapsed ? 'center' : 'space-between',
-          px: 2,
-        }}
-      >
+      <Toolbar sx={{ justifyContent: collapsed ? 'center' : 'space-between', px: 2 }}>
         {!collapsed && (
-          <Typography
-            variant="h6"
-            noWrap
-            sx={{
-              fontWeight: 'bold',
-              color: theme.palette.mode === 'dark' ? 'white' : 'black'
-            }}
-          >
+          <Typography variant="h6" noWrap fontWeight="bold">
             Options
           </Typography>
         )}
@@ -82,9 +69,9 @@ const Layout = ({ children }) => {
           .filter(item => item.roles.includes(user?.role))
           .map((item) => {
             const isSelected = location.pathname === item.path;
-            const selectedBg = theme.palette.mode === 'dark' ? '#fdd835' : '#2196f3';
-            const selectedHoverBg = theme.palette.mode === 'dark' ? '#fbc02d' : '#1976d2';
-            const selectedTextColor = theme.palette.getContrastText(selectedBg);
+            const selectedBg = darkMode ? '#fdd835' : '#2196f3';
+            const selectedHoverBg = darkMode ? '#fbc02d' : '#1976d2';
+            const selectedTextColor = '#000';
 
             return (
               <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
@@ -132,7 +119,7 @@ const Layout = ({ children }) => {
           width: `calc(100% - ${collapsed ? collapsedWidth : expandedWidth}px)`,
           ml: `${collapsed ? collapsedWidth : expandedWidth}px`,
           transition: 'all 0.3s ease',
-          bgcolor: theme.palette.mode === 'dark' ? '#fdd835' : '#1976d2'
+          bgcolor: darkMode ? '#fdd835' : '#1976d2'
         }}
       >
         <Toolbar>
@@ -142,13 +129,16 @@ const Layout = ({ children }) => {
             sx={{
               flexGrow: 1,
               fontWeight: 'bold',
-              color: theme.palette.mode === 'dark' ? '#000' : '#fff'
+              color: darkMode ? '#000' : '#fff'
             }}
           >
             Personal Asset Management
           </Typography>
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton onClick={toggleDarkMode} color="inherit" sx={{ mr: 2 }}>
+              {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
             <Typography variant="body2" sx={{ mr: 2 }}>{user?.name}</Typography>
             <IconButton onClick={handleMenu} color="inherit">
               <Avatar sx={{ width: 32, height: 32 }}>
