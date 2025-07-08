@@ -32,6 +32,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
+        // final String path = request.getRequestURI();
+
+        // // ✅ Skip JWT processing for public auth endpoints
+        // if (path.startsWith("/api/auth")) {
+        // filterChain.doFilter(request, response);
+        // return;
+        // }
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
@@ -42,6 +50,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7); // Remove "Bearer "
+
+        // try {
+        //     username = jwtService.extractUsername(jwt);
+        // } catch (Exception e) {
+        //     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired JWT");
+        //     return;
+        // }
+
         username = jwtService.extractUsername(jwt);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

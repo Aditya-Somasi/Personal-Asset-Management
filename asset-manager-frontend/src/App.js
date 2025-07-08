@@ -14,6 +14,7 @@ import UnauthorizedPage from './pages/UnauthorizedPage';
 import NotFoundPage from './pages/NotFoundPage';
 import UsersPage from './pages/UsersPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
+import HomePage from './pages/HomePage';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -55,6 +56,7 @@ function App() {
         <AuthProvider>
           <Router>
             <Routes>
+              <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/dashboard" element={<Dashboard darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
@@ -79,7 +81,8 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
-              <Route path="/" element={<Navigate to="/login" replace />} />
+              {/* <Route path="/" element={<Navigate to="/login" replace />} /> */}
+              
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Router>
